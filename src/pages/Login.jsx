@@ -1,8 +1,30 @@
 import React, { useState } from 'react';
+import { Redirect } from 'wouter';
+import { useUser } from '../services/UserContext';
 
 function Login() {
+  const { login, user } = useUser(); // Asegúrate de tener acceso a user desde useUser
+
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [contraseña, setContraseña] = useState('');
+  const [redirectToDashboard, setRedirectToDashboard] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login(email, contraseña);
+      setRedirectToDashboard(true); // Establecer redirectToDashboard en true al iniciar sesión correctamente
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Error en el inicio de sesión. Por favor, verifica tus credenciales.'); // Manejar errores de inicio de sesión
+    }
+  };
+
+  // Redirigir a Dashboard si redirectToDashboard es true
+  if (user) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800">
@@ -18,9 +40,9 @@ function Login() {
           <h2 className="text-3xl font-bold text-white">Reportes de Incidencias</h2>
         </div>
 
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+            <label htmlFor="email" className="block text-sm font-semibold text-white mb-1">Email</label>
             <input
               type="email"
               id="email"
@@ -31,12 +53,12 @@ function Login() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">Contraseña</label>
+            <label htmlFor="password" className="block text-sm font-semibold  text-white mb-1">Contraseña</label>
             <input
               type="password"
               id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={contraseña}
+              onChange={(e) => setContraseña(e.target.value)}
               className="w-full px-4 py-3 bg-white bg-opacity-20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
               placeholder="••••••••"
             />
@@ -61,13 +83,12 @@ function Login() {
             Ingresar
           </button>
         </form>
-
       </div>
 
       {/* Pie de página */}
       <div className="absolute bottom-4 left-0 right-0 text-center text-white">
         <div className="flex justify-center space-x-4 mt-2">
-          <a href="#" className="text-xl hover:text-gray-300 transition-colors">
+          <a href="#" className="text-xl hover:text-red-300 transition-colors">
             <i className="fab fa-facebook"></i>
           </a>
           <a href="#" className="text-xl hover:text-gray-300 transition-colors">
