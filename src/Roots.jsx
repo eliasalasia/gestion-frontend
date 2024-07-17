@@ -1,30 +1,26 @@
 import React from "react";
-import { Route, Switch } from "wouter";
-import Dashboard from "./pages/dashboard/Dashboard";
+import { Router, Route, Switch } from "wouter";
+import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
-import GestinIndence from "./pages/dashboard/GestinIndence";
-import CreateIncidence from "./pages/dashboard/CreateIncidence";
-import ListIncidence from "./pages/dashboard/ListIncidence";
+import ManageIncidence from "./pages/ManageIncidence";
+import CreateIncidence from "./pages/CreateIncidence";
+import ViewIncidence from "./components/dashboard/ViewIncidence";
+
+const userNombre = 'Ramses'; // Ejemplo de nombre de usuario, puedes reemplazarlo con datos reales
+const userType = 'admin'; // Ejemplo de tipo de usuario
 
 function Roots() {
   return (
-    <Switch>
-      <Route path="/" component={Login} />
-      <Route path="/login" component={Login} />
-      <Route path="/dashboard" exact>
-        <Dashboard />
-      </Route>
-      <Route path="/gestion-incidencias">
-        <GestinIndence />
-      </Route>
-      <Route path="/crear-incidencia">
-        <CreateIncidence />
-      </Route>
-      <Route path="/incidencias">
-        <ListIncidence />
-      </Route>
-
-    </Switch>
+    <Router>
+      <Switch>
+        <Route path="/" component={Login} />
+        <Route path="/login" component={Login} />
+        <Route path="/dashboard" component={() => <Dashboard userNombre={userNombre} userType={userType} />} />
+        <Route path="/crear-incidencia" component={() => <CreateIncidence userNombre={userNombre} />} />
+        <Route path="/gestion-incidencias" component={ManageIncidence} />
+        <Route path="/ver-incidencias" component={ViewIncidence} />
+      </Switch>
+    </Router>
   );
 }
 

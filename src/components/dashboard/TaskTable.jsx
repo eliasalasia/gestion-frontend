@@ -1,33 +1,7 @@
-import React, { useState } from 'react';
-
-function DashboardHeader() {
-  const [tasks, setTasks] = useState([
-    { id: 1, estado: 'En progreso', trabajo: 'Solicitar datos sobre aparcamiento', descripcion: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui...', idTarea: 90, asignado: 'Rafael Amargo', creado: '17/06/2015 19:50' },
-    // Añadir más tareas aquí según sea necesario
-  ]);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-300 to-gray-900 text-black">
-      <header className="bg-sky-900 text-white p-4">
-        <h1 className="text-2xl font-bold">Gestión de Incidencias</h1>
-      </header>
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <SearchBar />
-        <TaskTable tasks={tasks} />
-      </main>
-    </div>
-  );
-}
-
-function SearchBar() {
-  return (
-    <div className="mb-6">
-      {/* Aquí va el código de tu barra de búsqueda actual */}
-    </div>
-  );
-}
+import React from 'react';
 
 function TaskTable({ tasks }) {
+  console.log(tasks);
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
       <table className="w-full">
@@ -43,7 +17,7 @@ function TaskTable({ tasks }) {
         </thead>
         <tbody>
           {tasks.map((task) => (
-            <tr key={task.id} className="border-b">
+            <tr key={task.idTarea} className="border-b">
               <td className="p-2">
                 <span className={`inline-block w-3 h-3 rounded-full ${
                   task.estado === 'En progreso' ? 'bg-yellow-500' :
@@ -66,4 +40,4 @@ function TaskTable({ tasks }) {
   );
 }
 
-export default DashboardHeader;
+export default TaskTable;
