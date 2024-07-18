@@ -7,12 +7,12 @@ function TaskTable({ tasks }) {
       <table className="w-full">
         <thead className="bg-gray-100">
           <tr>
-            <th className="p-2 text-left">Estado</th>
-            <th className="p-2 text-left">Trabajo</th>
-            <th className="p-2 text-left">Descripción</th>
-            <th className="p-2 text-left">ID Tarea</th>
-            <th className="p-2 text-left">Asignado</th>
-            <th className="p-2 text-left">Creado</th>
+            <th className="p-2 text-left text-black">Estado</th>
+            <th className="p-2 text-left text-black">Trabajo</th>
+            <th className="p-2 text-left text-black">Descripción</th>
+            <th className="p-2 text-left text-black">ID Tarea</th>
+            <th className="p-2 text-left text-black">Asignado</th>
+            <th className="p-2 text-left text-black">Creado</th>
           </tr>
         </thead>
         <tbody>
@@ -39,5 +39,5 @@ function TaskTable({ tasks }) {
     </div>
   );
 }
-
+  
 export default TaskTable;

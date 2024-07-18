@@ -16,7 +16,7 @@ function Roots() {
         <Route path="/" component={Login} />
         <Route path="/login" component={Login} />
         <Route path="/dashboard" component={() => <Dashboard userNombre={userNombre} userType={userType} />} />
-        <Route path="/crear-incidencia" component={() => <CreateIncidence userNombre={userNombre} />} />
+        <Route path="/crear-incidencia" component={() => <CreateIncidence userNombre={userNombre}/>} />
         <Route path="/gestion-incidencias" component={ManageIncidence} />
         <Route path="/ver-incidencias" component={ViewIncidence} />
       </Switch>

@@ -11,7 +11,7 @@ function DashboardHeader({ userNombre }) {
             <h1 className="ml-3 text-xl font-bold">Dashboard</h1>
           </div>
           <div className="flex items-center">
-            <span className="mr-4">Bienvenido, {userNombre}</span>
+            <span className="mr-4">Bienvenido {userNombre}</span>
             <Link href="/login" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
               Cerrar sesión
             </Link>
