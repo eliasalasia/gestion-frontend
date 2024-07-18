@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import DashboardHeader from '../components/dashboard/DashboardHeader';
 import WelcomeMessage from '../components/dashboard/WelcomeMessage';
 import UserInfo from '../components/dashboard/UserInfo';
 import ActionBtn from '../components/dashboard/ActionBtn';
-import { useUser } from '../services/UserContext';
+import { UserContext } from '../services/UserContext';
 
 function Dashboard() {
-  const { user } = useUser();
+  const { user, loading } = useContext(UserContext);
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   if (!user) {
-    return <div>Cargando...</div>;
+    return <div>No hay información de usuario disponible.</div>;
   }
 
   return (
@@ -27,7 +31,7 @@ function Dashboard() {
             <ActionBtn userType={user.tipo} />
           </div>
         </main>
-      </div>
+      </div> 
     </div>
   );
 }
