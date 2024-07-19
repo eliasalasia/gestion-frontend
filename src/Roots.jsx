@@ -6,21 +6,24 @@ import ManageIncidence from "./pages/ManageIncidence";
 import CreateIncidence from "./pages/CreateIncidence";
 import ViewIncidence from "./components/dashboard/ViewIncidence";
 import UpdateIncidence from "./pages/UpdateIncidence";
-
-const userNombre = 'Ramses'; // Ejemplo de nombre de usuario, puedes reemplazarlo con datos reales
-const userType = 'admin'; // Ejemplo de tipo de usuario
+import UpdateIncUser from "./pages/UpdateIncUser";
+import { useUser } from './services/UserContext';
 
 function Roots() {
+  const { userNombre, userType, userId } = useUser();
+
+
   return (
     <Router>
       <Switch>
         <Route path="/" component={Login} />
         <Route path="/login" component={Login} />
         <Route path="/dashboard" component={() => <Dashboard userNombre={userNombre} userType={userType} />} />
-        <Route path="/crear-incidencia" component={() => <CreateIncidence userNombre={userNombre}/>} />
-        <Route path="/gestion-incidencias" component={ () => <ManageIncidence userNombre={userNombre} isAdmin={true}/>} />
-        <Route path="/ver-incidencias" component={ViewIncidence} />
+        <Route path="/crear-incidencia" component={() => <CreateIncidence userNombre={userNombre} />} />
+        <Route path="/gestion-incidencias" component={() => <ManageIncidence userNombre={userNombre} isAdmin={true} />} />
+        <Route path="/ver-incidencias" component={() => <ViewIncidence userType={userType} userId={userId} />} />
         <Route path="/actualizar-incidencia/:id" component={UpdateIncidence} />
+        <Route path="/actualizar-datos/:id" component={UpdateIncUser} />
       </Switch>
     </Router>
   );

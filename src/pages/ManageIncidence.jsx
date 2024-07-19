@@ -39,31 +39,31 @@ function ManageIncidence({ userNombre, isAdmin }) {
 
   const applyFilters = (currentFilters) => {
     let filtered = incidencias;
-    
+
     if (currentFilters.estado.length > 0) {
-      filtered = filtered.filter(inc => 
+      filtered = filtered.filter(inc =>
         currentFilters.estado.includes(inc.estado.toLowerCase())
       );
     }
-    
+
     if (currentFilters.desde) {
-      filtered = filtered.filter(inc => 
+      filtered = filtered.filter(inc =>
         new Date(inc.createdAt) >= new Date(currentFilters.desde)
       );
     }
-    
+
     if (currentFilters.hasta) {
-      filtered = filtered.filter(inc => 
+      filtered = filtered.filter(inc =>
         new Date(inc.createdAt) <= new Date(currentFilters.hasta)
       );
     }
-    
+
     if (currentFilters.asignado) {
       filtered = filtered.filter(inc =>
         inc.userId && inc.userId.toString().includes(currentFilters.asignado)
       );
     }
-    
+
     setFilteredIncidencias(filtered);
   };
 
@@ -86,13 +86,13 @@ function ManageIncidence({ userNombre, isAdmin }) {
         <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <Link href="/dashboard" className="text-white hover:text-gray-300 transition duration-300">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
-              <path d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z" fill="currentColor"/>
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor" />
+              <path d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z" fill="currentColor" />
             </svg>
           </Link>
           <SearchBar onFilterChange={handleFilterChange} />
-          <TaskTable 
-            tasks={filteredIncidencias} 
+          <TaskTable
+            tasks={filteredIncidencias}
             isAdmin={isAdmin}
             onUpdateState={handleUpdateState}
           />

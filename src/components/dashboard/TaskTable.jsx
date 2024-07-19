@@ -10,7 +10,7 @@ function TaskTable({ tasks, isAdmin, onUpdateState }) {
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
       <table className="w-full text-black">
-        <thead className="bg-gray-100">
+      <thead className="bg-gradient-to-r from-teal-500 via-teal-700 to-teal-800 text-white border-b border-gray-300">
           <tr>
             <th className="p-2 text-left">Estado</th>
             <th className="p-2 text-left">Asunto</th>
@@ -41,8 +41,7 @@ function TaskTable({ tasks, isAdmin, onUpdateState }) {
                     <span className={`inline-block w-3 h-3 rounded-full ${
                       task.estado === 'en proceso' ? 'bg-yellow-500' :
                       task.estado === 'pendiente' ? 'bg-blue-500' :
-                      task.estado === 'resuelto' ? 'bg-green-500' :
-                      'bg-red-500'
+                      task.estado === 'resuelto' ? 'bg-green-500' : 'bg-red-500'
                     } mr-2 inline-flex`}></span>
                   )}
                   {task.estado}
@@ -55,11 +54,18 @@ function TaskTable({ tasks, isAdmin, onUpdateState }) {
                 <td className="p-4">{new Date(task.updatedAt).toLocaleDateString()}</td>
                 <td className="p-2">
                   {task.imagenes && task.imagenes.length > 0 ? (
-                    task.imagenes.map((img, index) => (
-                      <a key={index} href={`http://localhost:3000/uploads/${img}`} target="_blank" rel="noopener noreferrer">
-                        <img src={`http://localhost:3000/uploads/${img}`} alt={`Imagen ${index + 1}`} className="w-16 h-16 object-cover" />
-                      </a>
-                    ))
+                    <div className="flex flex-wrap">
+                      {task.imagenes.map((img, index) => (
+                        <a key={index} href={img} target="_blank" rel="noopener noreferrer" className="block m-1">
+                          <img
+                            src={img}
+                            alt={`Imagen ${index + 1}`}
+                            className="w-16 h-16 object-cover rounded-md transition duration-300 ease-in-out transform hover:scale-110"
+                            onError={(e) => { e.target.onerror = null; }}
+                          />
+                        </a>
+                      ))}
+                    </div>
                   ) : (
                     'No hay imágenes'
                   )}
