@@ -12,50 +12,34 @@ const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.get('http://localhost:3000/api/users', { headers: { Authorization: `Bearer ${token}` } })
-        .then(res => {
-          // Asegúrate de que res.data tenga la estructura correcta
-          console.log('User data:', res.data);
-          setUser(res.data);
-        })
-        .catch(error => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const res = await axios.get('http://localhost:3000/api/users', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setUser(res.data); // Asegúrate de que res.data tenga la estructura correcta
+        } catch (error) {
           console.error('Error fetching user data:', error);
-        })
-        .finally(() => setLoading(false));
-    } else {
+        }
+      }
       setLoading(false);
-    }
+    };
+
+    fetchUserData();
   }, []);
 
   const login = async (email, contraseña) => {
     try {
       const res = await axios.post('http://localhost:3000/api/users/login', { email, contraseña });
       localStorage.setItem('token', res.data.token);
-      setUser(res.data.user); // Asegúrate de que res.data.user contiene nombre, tipo, piso, etc.
+      setUser(res.data.user); // Asegúrate de que res.data.user contiene los datos del usuario
     } catch (error) {
       console.error('Login error:', error.response?.data || error.message);
       throw error;
     }
   };
-  
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.get('http://localhost:3000/api/users', { headers: { Authorization: `Bearer ${token}` } })
-        .then(res => {
-          console.log('User data:', res.data);
-          setUser(res.data); // Asegúrate de que res.data contiene nombre, tipo, piso, etc.
-        })
-        .catch(error => {
-          console.error('Error fetching user data:', error);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
-  }, []);
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -69,4 +53,4 @@ const UserProvider = ({ children }) => {
   );
 };
 
-export { UserContext, UserProvider };  
+export { UserContext, UserProvider };

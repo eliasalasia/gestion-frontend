@@ -13,7 +13,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(email, contraseña);
+      await login(email, contraseña); // Enviar email y contraseña
       setRedirectToDashboard(true); // Establecer redirectToDashboard en true al iniciar sesión correctamente
     } catch (error) {
       console.error('Login error:', error);
@@ -53,7 +53,7 @@ function Login() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold  text-white mb-1">Contraseña</label>
+            <label htmlFor="password" className="block text-sm font-semibold text-white mb-1">Contraseña</label>
             <input
               type="password"
               id="password"

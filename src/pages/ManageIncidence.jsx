@@ -9,7 +9,7 @@ function ManageIncidence({ userNombre }) {
   const [incidencias, setIncidencias] = useState([]);
   const [filteredIncidencias, setFilteredIncidencias] = useState([]);
   const [filters, setFilters] = useState({
-    estado: '',
+    estado: [],
     desde: '',
     hasta: '',
     idTarea: '',
@@ -20,6 +20,10 @@ function ManageIncidence({ userNombre }) {
     fetchIncidencias();
   }, []);
 
+  useEffect(() => {
+    applyFilters(filters);
+  }, [filters, incidencias]);
+
   const fetchIncidencias = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -27,50 +31,50 @@ function ManageIncidence({ userNombre }) {
         console.error('No token found');
         return;
       }
-      console.log('Token being sent:', token); // Para depuración
       const response = await axios.get('http://localhost:3000/api/incidencias', {
         headers: { Authorization: `Bearer ${token}` }
-      });
+      });   
+      console.log('Incidencias recibidas:', response.data);
       setIncidencias(response.data);
-      setFilteredIncidencias(response.data);
+      setFilteredIncidencias(response.data); // Inicialmente, mostrar todas las incidencias
     } catch (error) {
       console.error('Error fetching incidencias:', error.response?.data || error.message);
-      if (error.response?.status === 401) {
-        // Manejar el error de autenticación (por ejemplo, redirigir al login)
-        console.log('Authentication failed. Redirecting to login...');
-        // Implementa aquí la lógica para redirigir al usuario al login
-      }
     }
   };
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    applyFilters(newFilters);
   };
 
   const applyFilters = (currentFilters) => {
     let filtered = incidencias;
-
-    if (currentFilters.estado) {
-      filtered = filtered.filter(inc => inc.estado.toLowerCase() === currentFilters.estado.toLowerCase());
+    
+    if (currentFilters.estado.length > 0) {
+      filtered = filtered.filter(inc => 
+        currentFilters.estado.some(estado => 
+          inc.estado.toLowerCase() === estado.toLowerCase()
+        )
+      );
     }
-
+    
     if (currentFilters.desde) {
-      filtered = filtered.filter(inc => new Date(inc.creado) >= new Date(currentFilters.desde));
+      filtered = filtered.filter(inc => 
+        new Date(inc.createdAt) >= new Date(currentFilters.desde)
+      );
     }
-
+    
     if (currentFilters.hasta) {
-      filtered = filtered.filter(inc => new Date(inc.creado) <= new Date(currentFilters.hasta));
+      filtered = filtered.filter(inc => 
+        new Date(inc.createdAt) <= new Date(currentFilters.hasta)
+      );
     }
-
-    if (currentFilters.idTarea) {
-      filtered = filtered.filter(inc => inc.id.toString().includes(currentFilters.idTarea));
-    }
-
+    
     if (currentFilters.asignado) {
-      filtered = filtered.filter(inc => inc.nombre_residente.toLowerCase().includes(currentFilters.asignado.toLowerCase()));
+      filtered = filtered.filter(inc =>
+        inc.userId && inc.userId.toString().includes(currentFilters.asignado)
+      );
     }
-
+    
     setFilteredIncidencias(filtered);
   };
 

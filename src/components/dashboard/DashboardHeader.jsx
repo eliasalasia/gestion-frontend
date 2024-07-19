@@ -17,7 +17,7 @@ function DashboardHeader({ userNombre }) {
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">
             <img src="/logito.webp" alt="Alto Paz Logo" className="h-10 w-auto" />
-            <h1 className="ml-3 text-xl font-bold">Dashboard</h1>
+            <h1 className="ml-3 text-xl font-bold">Torres Alto Paz</h1>
           </div>
           <div className="flex items-center">
             <span className="mr-4">Bienvenido {userNombre}</span>
