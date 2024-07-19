@@ -3,42 +3,33 @@ import DashboardHeader from '../components/dashboard/DashboardHeader';
 import SearchBar from '../components/dashboard/SearchBar';
 import TaskTable from '../components/dashboard/TaskTable';
 import { Link } from 'wouter';
-import axios from 'axios';
+import { fetchIncidencias, updateIncidenciaEstado } from '../api/fetchIncidencias';
 
-function ManageIncidence({ userNombre }) {
+function ManageIncidence({ userNombre, isAdmin }) {
   const [incidencias, setIncidencias] = useState([]);
   const [filteredIncidencias, setFilteredIncidencias] = useState([]);
   const [filters, setFilters] = useState({
     estado: [],
     desde: '',
     hasta: '',
-    idTarea: '',
     asignado: ''
   });
 
   useEffect(() => {
-    fetchIncidencias();
+    loadIncidencias();
   }, []);
 
   useEffect(() => {
     applyFilters(filters);
   }, [filters, incidencias]);
 
-  const fetchIncidencias = async () => {
+  const loadIncidencias = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.error('No token found');
-        return;
-      }
-      const response = await axios.get('http://localhost:3000/api/incidencias', {
-        headers: { Authorization: `Bearer ${token}` }
-      });   
-      console.log('Incidencias recibidas:', response.data);
-      setIncidencias(response.data);
-      setFilteredIncidencias(response.data); // Inicialmente, mostrar todas las incidencias
+      const data = await fetchIncidencias();
+      setIncidencias(data);
+      setFilteredIncidencias(data);
     } catch (error) {
-      console.error('Error fetching incidencias:', error.response?.data || error.message);
+      console.error('Error fetching incidencias:', error.message);
     }
   };
 
@@ -51,9 +42,7 @@ function ManageIncidence({ userNombre }) {
     
     if (currentFilters.estado.length > 0) {
       filtered = filtered.filter(inc => 
-        currentFilters.estado.some(estado => 
-          inc.estado.toLowerCase() === estado.toLowerCase()
-        )
+        currentFilters.estado.includes(inc.estado.toLowerCase())
       );
     }
     
@@ -78,6 +67,15 @@ function ManageIncidence({ userNombre }) {
     setFilteredIncidencias(filtered);
   };
 
+  const handleUpdateState = async (incidenciaId, newState) => {
+    try {
+      await updateIncidenciaEstado(incidenciaId, newState);
+      loadIncidencias(); // Recargar incidencias después de actualizar
+    } catch (error) {
+      console.error('Error updating incidencia state:', error.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -93,7 +91,11 @@ function ManageIncidence({ userNombre }) {
             </svg>
           </Link>
           <SearchBar onFilterChange={handleFilterChange} />
-          <TaskTable tasks={filteredIncidencias} />
+          <TaskTable 
+            tasks={filteredIncidencias} 
+            isAdmin={isAdmin}
+            onUpdateState={handleUpdateState}
+          />
         </main>
       </div>
     </div>

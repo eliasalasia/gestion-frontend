@@ -1,39 +1,58 @@
 import React from 'react';
 
-function TaskTable({ tasks }) {
+function TaskTable({ tasks, isAdmin, onUpdateState }) {
+  console.log('Is Admin:', isAdmin);
+
+  const handleStateChange = (incidenciaId, newState) => {
+    onUpdateState(incidenciaId, newState);
+  };
+
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
-      <table className="w-full">
+      <table className="w-full text-black">
         <thead className="bg-gray-100">
           <tr>
-            <th className="p-2 text-left text-black">Estado</th>
-            <th className="p-2 text-left text-black">Asunto</th>
-            <th className="p-2 text-left text-black">Descripción</th>
-            <th className="p-2 text-left text-black">Ubicación</th>
-            <th className="p-2 text-left text-black">Tipo</th>
-            <th className="p-2 text-left text-black">Creado</th>
-            <th className="p-2 text-left text-black">Actualizado</th>
-            <th className="p-2 text-left text-black">Imagen</th>
+            <th className="p-2 text-left">Estado</th>
+            <th className="p-2 text-left">Asunto</th>
+            <th className="p-2 text-left">Descripción</th>
+            <th className="p-2 text-left">Ubicación</th>
+            <th className="p-2 text-left">Tipo</th>
+            <th className="p-2 text-left">Creado</th>
+            <th className="p-2 text-left">Actualizado</th>
+            <th className="p-2 text-left">Imagen</th>
           </tr>
         </thead>
         <tbody>
           {tasks.length > 0 ? (
             tasks.map((task) => (
               <tr key={task.id} className="border-b">
-                <td className="p-2">
-                  <span className={`inline-block w-3 h-3 rounded-full ${task.estado.toLowerCase() === 'en proceso' ? 'bg-yellow-500' :
-                      task.estado.toLowerCase() === 'pendiente' ? 'bg-blue-500' :
-                        task.estado.toLowerCase() === 'resuelto' ? 'bg-green-500' :
-                          'bg-red-500'
-                    } mr-2`}></span>
+                <td className="p-4">
+                  {isAdmin ? (
+                    <select
+                      value={task.estado}
+                      onChange={(e) => handleStateChange(task.id, e.target.value)}
+                      className="bg-white border rounded"
+                    >
+                      <option value="pendiente">Pendiente</option>
+                      <option value="en proceso">En Proceso</option>
+                      <option value="resuelto">Resuelto</option>
+                    </select>
+                  ) : (
+                    <span className={`inline-block w-3 h-3 rounded-full ${
+                      task.estado === 'en proceso' ? 'bg-yellow-500' :
+                      task.estado === 'pendiente' ? 'bg-blue-500' :
+                      task.estado === 'resuelto' ? 'bg-green-500' :
+                      'bg-red-500'
+                    } mr-2 inline-flex`}></span>
+                  )}
                   {task.estado}
                 </td>
-                <td className="p-2 text-black">{task.asunto}</td>
-                <td className="p-2 text-black">{task.descripcion}</td>
-                <td className="p-2 text-black">{task.ubicacion}</td>
-                <td className="p-2 text-black">{task.tipo}</td>
-                <td className="p-2 text-black">{new Date(task.createdAt).toLocaleDateString()}</td>
-                <td className="p-2 text-black">{new Date(task.updatedAt).toLocaleDateString()}</td>
+                <td className="p-4">{task.asunto}</td>
+                <td className="p-4">{task.descripcion}</td>
+                <td className="p-4">{task.ubicacion}</td>
+                <td className="p-4">{task.tipo}</td>
+                <td className="p-4">{new Date(task.createdAt).toLocaleDateString()}</td>
+                <td className="p-4">{new Date(task.updatedAt).toLocaleDateString()}</td>
                 <td className="p-2">
                   {task.imagenes && task.imagenes.length > 0 ? (
                     task.imagenes.map((img, index) => (
@@ -49,7 +68,7 @@ function TaskTable({ tasks }) {
             ))
           ) : (
             <tr>
-              <td colSpan="8" className="p-2 text-center">No se encontraron incidencias</td>
+              <td colSpan="9" className="p-2 text-center">No se encontraron incidencias</td>
             </tr>
           )}
         </tbody>
