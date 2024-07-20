@@ -8,35 +8,62 @@ const ViewIncidencias = ({ userType, userId }) => {
   const { user } = useUser();
   const [incidencias, setIncidencias] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // Estado de carga
+
+  const fetchIncidencias = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.get('http://localhost:3000/api/incidencias', config);
+
+      if (Array.isArray(response.data)) {
+        setIncidencias(response.data);
+      } else {
+        setIncidencias([]);
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error('Datos de la respuesta de error:', error.response.data);
+        console.error('Estado de la respuesta de error:', error.response.status);
+      }
+      setError(`Error al obtener incidencias: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchIncidencias = async () => {
+    fetchIncidencias();
+  }, []);
+
+  const handleEliminar = async (id) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar esta incidencia?')) {
       try {
         const token = localStorage.getItem('token');
         const config = {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         };
 
-        const response = await axios.get('http://localhost:3000/api/incidencias', config);
-
-        if (Array.isArray(response.data)) {
-          setIncidencias(response.data);
-        } else {
-          setIncidencias([]);
-        }
+        await axios.delete(`http://localhost:3000/api/incidencias/${id}`, config);
+        // Refrescar la lista de incidencias después de eliminar
+        fetchIncidencias();
       } catch (error) {
-        if (error.response) {
-          console.error('Datos de la respuesta de error:', error.response.data);
-          console.error('Estado de la respuesta de error:', error.response.status);
-        }
-        setError(`Error al obtener incidencias: ${error.message}`);
+        console.error('Error al eliminar la incidencia:', error.message);
       }
-    };
+    }
+  };
 
-    fetchIncidencias();
-  }, []);
+  if (loading) {
+    return <div className="p-4 text-white">Cargando...</div>; // Mensaje de carga
+  }
 
   if (error) {
     return <div className="p-4 text-red-500">{error}</div>;
@@ -76,8 +103,9 @@ const ViewIncidencias = ({ userType, userId }) => {
                     <th className="p-2 text-left">Estado</th>
                     <th className="p-2 text-left">Creado</th>
                     <th className="p-2 text-left">Actualizado</th>
-                    <th className="p-2 text-left">Imagenes</th>
+                    <th className="p-2 text-left">Imágenes</th>
                     <th className="p-2 text-left">Acciones</th>
+                    <th className="p-2 text-left">Eliminar</th> {/* Nuevo encabezado para eliminar */}
                   </tr>
                 </thead>
                 <tbody>
@@ -90,8 +118,8 @@ const ViewIncidencias = ({ userType, userId }) => {
                       <td className="p-4">{incidencia.tipo}</td>
                       <td className="p-4">
                         <span className={`inline-block w-3 h-3 rounded-full ${incidencia.estado === 'en proceso' ? 'bg-yellow-500' :
-                            incidencia.estado === 'pendiente' ? 'bg-blue-500' :
-                              incidencia.estado === 'resuelto' ? 'bg-green-500' : 'bg-red-500'
+                          incidencia.estado === 'pendiente' ? 'bg-blue-500' :
+                            incidencia.estado === 'resuelto' ? 'bg-green-500' : 'bg-red-500'
                           } mr-2 inline-flex`}></span>
                         {incidencia.estado}
                       </td>
@@ -103,13 +131,20 @@ const ViewIncidencias = ({ userType, userId }) => {
                         ))}
                       </td>
                       <td className="p-4">
-                          <Link
-                            href={`/actualizar-datos/${userId}`}
-                            className="block w-full text-red-500 text-center py-3 rounded-lg font-medium transition duration-300"
-                          >
-                            Actualizar 
-                          </Link>
-                        
+                        <Link
+                          href={`/actualizar-datos/${incidencia.id}`}
+                          className="block w-full text-red-500 text-center py-3 rounded-lg font-medium transition duration-300"
+                        >
+                          Actualizar
+                        </Link>
+                      </td>
+                      <td className="p-4">
+                        <button
+                          onClick={() => handleEliminar(incidencia.id)}
+                          className="block w-full text-red-500 text-center py-3 rounded-lg font-medium transition duration-300"
+                        >
+                          Eliminar
+                        </button>
                       </td>
                     </tr>
                   ))}

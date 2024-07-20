@@ -17,6 +17,9 @@ export const updateIncidenciaEstado = async (id, newState) => {
       throw new Error(error.response?.data?.message || error.message);
     }
   };
+
+
+  
   export const fetchIncidenciaById = async (id) => {
     try {
       const response = await axiosInstance.get(`/incidencias/${id}`);
@@ -27,13 +30,18 @@ export const updateIncidenciaEstado = async (id, newState) => {
   };
   
   export const updateIncidencia = async (id, updatedData) => {
-    const token = localStorage.getItem('token');
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    };
+    if (!id) {
+      throw new Error('ID de incidencia no proporcionado');
+    }
   
-    const response = await axiosInstance.put(`/incidencias/${id}`, updatedData, config);
-    return response.data;
+    try {
+      const response = await axiosInstance.put(`/incidencias/${id}`, updatedData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
   };

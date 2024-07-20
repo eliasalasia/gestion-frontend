@@ -23,7 +23,9 @@ function Roots() {
         <Route path="/gestion-incidencias" component={() => <ManageIncidence userNombre={userNombre} isAdmin={true} />} />
         <Route path="/ver-incidencias" component={() => <ViewIncidence userType={userType} userId={userId} />} />
         <Route path="/actualizar-incidencia/:id" component={UpdateIncidence} />
-        <Route path="/actualizar-datos/:id" component={UpdateIncUser} />
+        <Route path="/actualizar-datos/:id">
+          {(params) => <UpdateIncUser params={params} />}
+        </Route>
       </Switch>
     </Router>
   );
